@@ -32,13 +32,10 @@ fastify.addHook("onRequest", loggingMiddleware);
 // Routes
 const routes = [
   { route: authRoute, prefix: "/auth" },
+
   { route: accountRoute, prefix: "/mentis" },
   { route: transactionRoute, prefix: "/mentis" },
 ];
-
-fastify.get('/', async () => {
-  return { message: 'pong' };
-});
 
 routes.forEach(({ route, prefix }) => fastify.register(route, { prefix }));
 
