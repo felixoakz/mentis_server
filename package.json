@@ -5,7 +5,7 @@
   "scripts": {
     "compile": "tsc -p tsconfig.json",
     "dev": "npm run compile && (pm2 restart ecosystem.config.cjs || pm2 start ecosystem.config.cjs --watch --no-daemon) && pm2 logs",
-    "prod": "NODE_ENV=production npm run compile && pm2 reload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs"
+    "prod": "NODE_ENV=production npm run compile && pm2 reload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit push"
   },
