@@ -37,6 +37,10 @@ const routes = [
   { route: transactionRoute, prefix: "/mentis" },
 ];
 
+fastify.get('/ping', () => {
+  return "pong"
+})
+
 routes.forEach(({ route, prefix }) => fastify.register(route, { prefix }));
 
 // Start server
