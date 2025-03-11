@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'server_mentis',
+      name: 'daemonoakz_server',
       script: 'dist/server.js',
       instances: 1,
       exec_mode: 'fork', // To ensure one process

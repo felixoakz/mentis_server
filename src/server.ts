@@ -44,10 +44,12 @@ const start = async (): Promise<void> => {
   try {
     await fastify.listen({ port });
     console.log(`\n===> Server is running on http://localhost:${port}`);
+
   } catch (err) {
     console.error(err);
     fastify.log.error(err);
     process.exit(1);
+
   }
 };
 
