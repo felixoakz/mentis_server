@@ -1,4 +1,4 @@
-import Fastify, { FastifyInstance } from "fastify";
+import Fastify, { FastifyInstance, FastifyReply } from "fastify";
 import fastifyCookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
 import fastifyRateLimit from "@fastify/rate-limit";
@@ -37,8 +37,8 @@ const routes = [
   { route: transactionRoute, prefix: "/mentis" },
 ];
 
-fastify.get('/ping', () => {
-  return "pong"
+fastify.get('/ping', (_, reply: FastifyReply) => {
+  return reply.send('pong')
 })
 
 routes.forEach(({ route, prefix }) => fastify.register(route, { prefix }));
