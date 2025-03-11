@@ -1,0 +1,32 @@
+{
+  "name": "server_mentis",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "compile": "tsc -p tsconfig.json",
+    "dev": "npm run compile && (pm2 restart ecosystem.config.cjs || pm2 start ecosystem.config.cjs --watch --no-daemon) && pm2 logs",
+    "prod": "npm run compile && pm2 restart ecosystem.config.cjs || pm2 start ecosystem.config.cjs",
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit push"
+  },
+
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^10.0.2",
+    "@fastify/jwt": "^9.0.3",
+    "@fastify/rate-limit": "^10.2.2",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.38.4",
+    "fastify": "^5.2.1",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^22.10.10",
+    "@types/pg": "^8.11.11",
+    "drizzle-kit": "^0.30.2",
+    "pm2": "^5.4.3",
+    "typescript": "^5.7.3"
+  }
+}
