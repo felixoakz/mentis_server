@@ -6,12 +6,6 @@ module.exports = {
       instances: 1,
       autorestart: true,
       exec_mode: 'fork', // To ensure one process
-      env: {
-        NODE_ENV: "development",
-      },
-      env_production: {
-        NODE_ENV: "production",
-      },
       watch: true,       // Watch file changes
       ignore_watch: ['node_modules', 'logs', 'tmp', 'src/migrations'],
       watch_options: {
