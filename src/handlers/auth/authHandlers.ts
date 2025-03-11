@@ -60,7 +60,7 @@ export async function authLogin(request: FastifyRequest, reply: FastifyReply) {
       httpOnly: true,
       signed: true,
       path: "/",
-      secure: process.env.NODE_ENV === 'production',
+      secure: true, // process.env.NODE_ENV === 'production'
       sameSite: "none"
     });
 
