@@ -6,6 +6,6 @@ export async function loggingMiddleware(request: FastifyRequest) {
   const timestamp = new Date().toISOString();
 
   console.log(
-    `=> REQUEST > ${method} > ${url} | ${timestamp} |`
+    `=> ${method} > ${url} | ${timestamp} |`
   );
 }
