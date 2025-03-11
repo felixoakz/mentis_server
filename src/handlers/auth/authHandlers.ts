@@ -55,7 +55,15 @@ export async function authLogin(request: FastifyRequest, reply: FastifyReply) {
 
     const token = fastify.jwt.sign({ id: existingUser.id });
 
-    reply.setCookie("token", token, { httpOnly: true, signed: true, path: "/" });
+
+    reply.setCookie("token", token, {
+      httpOnly: true,
+      signed: true,
+      path: "/",
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: "none"
+    });
+
     reply.send({ message: "Logged in", user });
 
   } catch (error) {
