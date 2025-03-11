@@ -19,7 +19,7 @@ fastify.register(fastifyCookie, { secret: cookieSecret });
 fastify.register(fastifyJwt, { secret: jwtSecret, cookie: { cookieName: "token", signed: true } });
 fastify.register(fastifyRateLimit, { max: rateLimit.max, timeWindow: rateLimit.timeWindow });
 await fastify.register(cors, {
-  origin: ["http://localhost:3000", "https://mentisserver.ddns.net"],
+  origin: ["http://localhost:3000"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -31,10 +31,14 @@ fastify.addHook("onRequest", loggingMiddleware);
 
 // Routes
 const routes = [
-  { route: authRoute, prefix: "/api/auth" },
-  { route: accountRoute, prefix: "/api" },
-  { route: transactionRoute, prefix: "/api" },
+  { route: authRoute, prefix: "/auth" },
+  { route: accountRoute, prefix: "/mentis" },
+  { route: transactionRoute, prefix: "/mentis" },
 ];
+
+fastify.get('/', async () => {
+  return { message: 'pong' };
+});
 
 routes.forEach(({ route, prefix }) => fastify.register(route, { prefix }));
 
