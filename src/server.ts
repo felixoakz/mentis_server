@@ -24,7 +24,7 @@ await fastify.register(cors, {
   allowedHeaders: ["Content-Type", "Authorization"],
   exposedHeaders: ["Set-Cookie"],
   credentials: true,
-  preflightContinue: false
+  preflightContinue: true
 })
 
 // Middleware
