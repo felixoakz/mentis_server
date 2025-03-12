@@ -21,9 +21,10 @@ fastify.register(fastifyRateLimit, { max: rateLimit.max, timeWindow: rateLimit.t
 await fastify.register(cors, {
   origin: ["http://localhost:3000", "https://appmentis.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Set-Cookie"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  exposedHeaders: ["Set-Cookie"],
   credentials: true,
-  preflightContinue: true
+  preflightContinue: false
 })
 
 // Middleware
@@ -47,7 +48,6 @@ routes.forEach(({ route, prefix }) => fastify.register(route, { prefix }));
 const start = async (): Promise<void> => {
   try {
     await fastify.listen({ port });
-    console.log('environment:', process.env.NODE_ENV === 'production')
     console.log(`\n===> Server is running on http://localhost:${port}`);
 
   } catch (err) {
