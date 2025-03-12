@@ -47,7 +47,8 @@ routes.forEach(({ route, prefix }) => fastify.register(route, { prefix }));
 const start = async (): Promise<void> => {
   try {
     await fastify.listen({ port });
-    console.log(`===> Server is running on http://localhost:${port}`);
+    console.log('ENV::', process.env.NODE_ENV === 'production')
+    console.log(`\n===> Server is running on http://localhost:${port}`);
 
   } catch (err) {
     console.error(err);
