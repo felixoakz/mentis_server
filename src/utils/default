@@ -19,6 +19,40 @@ server {
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
+    # =====================
+    # Functional Configuration
+    # =====================
+
+    # Serve static React files
+    location / {
+        root /var/www/mentis/build/;
+        index index.html;
+        try_files $uri $uri/ /index.html;  # React Router support
+
+        # Cache static files for performance
+        expires 1y;
+        add_header Cache-Control "public, immutable, max-age=31536000, no-transform";
+    }
+
+    # Proxy requests to Fastify backend
+    location /api/ {
+        limit_req zone=rate_limit burst=20 nodelay;
+        proxy_pass http://localhost:7000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header Cookie $http_cookie;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # Rate limiting configuration
+    limit_req zone=rate_limit burst=5 nodelay;
+
+    # ============================
+    # Security Configuration
+    # ============================
+
     # Security Headers
     add_header X-Frame-Options "DENY";
     add_header X-XSS-Protection "1; mode=block";
@@ -53,33 +87,40 @@ server {
         return 444;
     }
 
-    # Serve static React files
-    location / {
-        root /var/www/mentis/build/;
-        index index.html;
-        try_files $uri $uri/ /index.html;  # React Router support
-
-        # Cache static files for performance
-        expires 1y;
-        add_header Cache-Control "public, immutable, max-age=31536000, no-transform";
+    # Disable unused HTTP methods
+    if ($request_method !~ ^(GET|HEAD|POST|PUT|DELETE|OPTIONS|PATCH)$ ) {
+        return 405;
     }
 
-    # Proxy requests to Fastify backend
-    location /api/ {
-        limit_req zone=rate_limit burst=20 nodelay;
-        proxy_pass http://localhost:7000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header Cookie $http_cookie;
-        proxy_cache_bypass $http_upgrade;
+    # Block bad bots & scrapers
+    if ($http_user_agent ~* (curl|wget|python|nmap|nikto|sqlmap)) {
+        return 403;
     }
 
-    # Apply rate limiting to the entire server
-    limit_req zone=rate_limit burst=5 nodelay;
+    # Prevent hotlinking
+    location /uploads/ {
+        valid_referers none blocked appmentis.ddns.net;
+        if ($invalid_referer) {
+            return 403;
+        }
+    }
 
-    # Additional hardening
+    # Block common attack patterns
+    if ($query_string ~* "(union.*select|select.*from|benchmark\(|outfile|dumpfile)") {
+        return 403;
+    }
+
+    if ($request_uri ~* "(wp-admin|wp-login|xmlrpc.php)") {
+        return 403;
+    }
+
+    # Block access to sensitive paths or files
+    autoindex off;
+
+    # ==============================
+    # Additional Hardening Configuration
+    # ==============================
+
     client_body_buffer_size 1k;
     client_max_body_size 1m;
     client_header_buffer_size 1k;
