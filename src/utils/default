@@ -8,7 +8,7 @@ server {
     return 301 https://$host$request_uri;
 }
 
-# HTTPS server to handle requests and proxy to Fastify
+# HTTPS server to serve React app and proxy requests
 server {
     listen 443 ssl;
     listen [::]:443 ssl ipv6only=on;
@@ -64,8 +64,19 @@ server {
         return 420;
     }
 
-    # Proxy requests to Node.js on port 7000 (excluding "/")
+    # Serve static React files
     location / {
+        root /var/www/mentis;  # Change this to the path where the React build folder is located
+        index index.html;
+        try_files $uri $uri/ /index.html;  # For React Router support
+
+        # Cache static files for improved performance
+        expires 1y;
+        add_header Cache-Control "public, immutable, max-age=31536000, no-transform";
+    }
+
+    # Proxy requests to Fastify if needed (if you're running a backend as well)
+    location /api/ {
         limit_req zone=rate_limit burst=20 nodelay;
         proxy_pass http://localhost:7000;
         proxy_http_version 1.1;
