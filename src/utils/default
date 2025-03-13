@@ -1,10 +1,9 @@
-# HTTP server to redirect to HTTPS
+# Redirect all HTTP traffic to HTTPS
 server {
     listen 80;
     listen [::]:80;
     server_name appmentis.ddns.net;
 
-    # Redirect all HTTP traffic to HTTPS
     return 301 https://$host$request_uri;
 }
 
@@ -14,14 +13,9 @@ server {
     listen [::]:443 ssl ipv6only=on;
     server_name appmentis.ddns.net;
 
-    location = /favicon.ico {
-        log_not_found off;  # Stop logging this specific file request
-        return 404;
-    }
-
     # SSL Configuration (Managed by Certbot)
-    ssl_certificate /etc/letsencrypt/live/daemonoakz.ddns.net/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/daemonoakz.ddns.net/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/appmentis.ddns.net/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/appmentis.ddns.net/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
@@ -59,23 +53,18 @@ server {
         return 444;
     }
 
-    # Block exact "/" requests
-    # location = / {
-    #     return 420;
-    # }
-
     # Serve static React files
     location / {
         root /var/www/mentis/build/;
         index index.html;
-        try_files $uri $uri/ /index.html;  # For React Router support
+        try_files $uri $uri/ /index.html;  # React Router support
 
-        # Cache static files for improved performance
+        # Cache static files for performance
         expires 1y;
         add_header Cache-Control "public, immutable, max-age=31536000, no-transform";
     }
 
-    # Proxy requests to Fastify if needed (if you're running a backend as well)
+    # Proxy requests to Fastify backend
     location /api/ {
         limit_req zone=rate_limit burst=20 nodelay;
         proxy_pass http://localhost:7000;
@@ -90,7 +79,7 @@ server {
     # Apply rate limiting to the entire server
     limit_req zone=rate_limit burst=5 nodelay;
 
-    # Additional hardening against request-based attacks
+    # Additional hardening
     client_body_buffer_size 1k;
     client_max_body_size 1m;
     client_header_buffer_size 1k;
