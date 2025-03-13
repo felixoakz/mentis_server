@@ -60,13 +60,13 @@ server {
     }
 
     # Block exact "/" requests
-    location = / {
-        return 420;
-    }
+    # location = / {
+    #     return 420;
+    # }
 
     # Serve static React files
     location / {
-        root /var/www/mentis;  # Change this to the path where the React build folder is located
+        root /var/www/mentis/build/;
         index index.html;
         try_files $uri $uri/ /index.html;  # For React Router support
 

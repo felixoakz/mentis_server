@@ -31,13 +31,13 @@ fastify.addHook("onRequest", loggingMiddleware);
 
 // Routes
 const routes = [
-  { route: authRoute, prefix: "/auth" },
+  { route: authRoute, prefix: "/api/auth" },
 
-  { route: accountRoute, prefix: "/mentis" },
-  { route: transactionRoute, prefix: "/mentis" },
+  { route: accountRoute, prefix: "/api/mentis" },
+  { route: transactionRoute, prefix: "/api/mentis" },
 ];
 
-fastify.get('/ping', (_, reply: FastifyReply) => {
+fastify.get('/api/ping', (_, reply: FastifyReply) => {
   return reply.send('pong')
 })
 
