@@ -5,7 +5,7 @@ dotenv.config();
 const requiredEnvVars = [
   'COOKIE_SECRET',
   'JWT_SECRET',
-  'DATABASE_URL',
+  'MENTIS_DB_URL',
   'RATE_LIMIT_MAX',
   'RATE_LIMIT_TIME_WINDOW',
   'PORT'
@@ -24,7 +24,7 @@ export const constants = {
   port: Number(process.env.PORT),
 
   db: {
-    databaseUrl: process.env.DATABASE_URL!
+    databaseUrl: process.env.MENTIS_DB_URL!
   },
 
   rateLimit: {

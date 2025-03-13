@@ -2,7 +2,7 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name daemonoakz.ddns.net;
+    server_name appmentis.ddns.net;
 
     # Redirect all HTTP traffic to HTTPS
     return 301 https://$host$request_uri;
@@ -12,7 +12,7 @@ server {
 server {
     listen 443 ssl;
     listen [::]:443 ssl ipv6only=on;
-    server_name daemonoakz.ddns.net;
+    server_name appmentis.ddns.net;
 
     location = /favicon.ico {
         log_not_found off;  # Stop logging this specific file request

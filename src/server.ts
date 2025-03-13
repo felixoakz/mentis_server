@@ -16,8 +16,11 @@ const fastify: FastifyInstance = Fastify();
 
 // Register plugins
 fastify.register(fastifyCookie, { secret: cookieSecret });
+
 fastify.register(fastifyJwt, { secret: jwtSecret, cookie: { cookieName: "token", signed: true } });
+
 fastify.register(fastifyRateLimit, { max: rateLimit.max, timeWindow: rateLimit.timeWindow });
+
 await fastify.register(cors, {
   origin: ["http://localhost:3000", "https://daemonoakz.ddns.net"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],

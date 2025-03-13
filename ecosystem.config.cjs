@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'daemonoakz_server',
+      name: 'mentis_server',
       script: 'dist/server.js',
       instances: 1,
       autorestart: true,
