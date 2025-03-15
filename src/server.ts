@@ -22,7 +22,7 @@ fastify.register(fastifyJwt, { secret: jwtSecret, cookie: { cookieName: "token",
 fastify.register(fastifyRateLimit, { max: rateLimit.max, timeWindow: rateLimit.timeWindow });
 
 await fastify.register(cors, {
-  origin: ["http://localhost:3000", "https://appmentis.ddns.net"],
+  origin: ["http://localhost:5173", "https://appmentis.ddns.net"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Set-Cookie"],
   credentials: true,
