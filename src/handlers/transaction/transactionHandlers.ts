@@ -18,6 +18,8 @@ export async function createTransaction(request: FastifyRequest, reply: FastifyR
 		if (!account_id || !amount)
 			throw ValidationError("Missing required fields account id and/or amount")
 
+		if (isNaN(amount)) throw ValidationError("Invalid amount");
+
 		const [currentBalance] = await db
 			.select({ balance: AccountTable.balance })
 			.from(AccountTable)
