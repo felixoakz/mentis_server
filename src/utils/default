@@ -7,7 +7,7 @@ server {
     return 301 https://$host$request_uri;
 }
 
-# HTTPS server to serve React app and proxy requests
+# HTTPS server to serve Vite app and proxy requests
 server {
     listen 443 ssl;
     listen [::]:443 ssl ipv6only=on;
@@ -23,25 +23,16 @@ server {
     # Functional Configuration
     # =====================
 
-    # Serve static React files
+    # Serve static Vite files
     location / {
-        root /var/www/mentis/dist/;
+        root /var/www/mentis/client/dist/;  # Updated path to Vite's dist folder
         index index.html;
-        try_files $uri /index.html;  # React Router support
+        try_files $uri $uri/ /index.html;  # Vite Router support
 
         # Cache static files for performance
         expires 1y;
         add_header Cache-Control "public, immutable, max-age=31536000, no-transform";
     }
-
-    # Serve static assets explicitly
-    location /assets/ {
-        alias /var/www/mentis/dist/assets/;
-        expires 1y;
-        add_header Cache-Control "public, immutable, max-age=31536000, no-transform";
-    }
-
-
 
     # Proxy requests to Fastify backend
     location /api/ {
@@ -55,7 +46,7 @@ server {
         proxy_cache_bypass $http_upgrade;
     }
 
-    # Apply rate limiting to the entire server
+    # Rate limiting configuration
     limit_req zone=rate_limit burst=5 nodelay;
 
     # ============================
