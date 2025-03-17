@@ -25,14 +25,23 @@ server {
 
     # Serve static React files
     location / {
-        root /var/www/mentis/build/;
+        root /var/www/mentis/dist/;
         index index.html;
-        try_files $uri $uri/ /index.html;  # React Router support
+        try_files $uri /index.html;  # React Router support
 
         # Cache static files for performance
         expires 1y;
         add_header Cache-Control "public, immutable, max-age=31536000, no-transform";
     }
+
+    # Serve static assets explicitly
+    location /assets/ {
+        alias /var/www/mentis/dist/assets/;
+        expires 1y;
+        add_header Cache-Control "public, immutable, max-age=31536000, no-transform";
+    }
+
+
 
     # Proxy requests to Fastify backend
     location /api/ {
@@ -46,7 +55,7 @@ server {
         proxy_cache_bypass $http_upgrade;
     }
 
-    # Rate limiting configuration
+    # Apply rate limiting to the entire server
     limit_req zone=rate_limit burst=5 nodelay;
 
     # ============================
