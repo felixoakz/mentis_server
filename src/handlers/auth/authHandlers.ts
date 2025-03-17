@@ -61,7 +61,7 @@ export async function authLogin(request: FastifyRequest, reply: FastifyReply) {
       signed: true,
       path: "/",
       secure: process.env.NODE_ENV === 'production',
-      sameSite: "none"
+      sameSite: "lax"
     });
 
     reply.send({ message: "Logged in", user });
