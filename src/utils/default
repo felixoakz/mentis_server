@@ -25,7 +25,7 @@ server {
 
     # Serve static React files
     location / {
-        root /var/www/mentis/build/;
+        root /var/www/build/;
         index index.html;
         try_files $uri $uri/ /index.html;  # React Router support
 
