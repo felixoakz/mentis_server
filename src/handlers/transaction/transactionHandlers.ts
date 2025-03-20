@@ -101,16 +101,18 @@ export async function updateTransaction(request: FastifyRequest, reply: FastifyR
 			.where(eq(TransactionTable.id, id))
 			.returning();
 
+		let newBalance = null
 		if (amount !== undefined) {
 			const amountDifference = amount - existingTransaction.amount;
 
-			await db
+			[newBalance] = await db
 				.update(AccountTable)
 				.set({ balance: sql`${AccountTable.balance} + ${amountDifference}` })
-				.where(eq(AccountTable.id, existingTransaction.account_id));
+				.where(eq(AccountTable.id, existingTransaction.account_id))
+				.returning({ balance: AccountTable.balance });
 		}
 
-		return reply.status(200).send({ updatedTransaction });
+		return reply.status(200).send({ updatedTransaction, newBalance });
 
 	} catch (error) {
 		handleError(error, reply);
@@ -130,12 +132,13 @@ export async function deleteTransaction(request: FastifyRequest, reply: FastifyR
 
 		await db.delete(TransactionTable).where(eq(TransactionTable.id, id));
 
-		await db
+		const [newBalance] = await db
 			.update(AccountTable)
 			.set({ balance: sql`${AccountTable.balance} - ${transaction.amount}` })
-			.where(eq(AccountTable.id, transaction.account_id));
+			.where(eq(AccountTable.id, transaction.account_id))
+			.returning({balance: AccountTable.balance})
 
-		return reply.status(200).send({ message: "Transaction deleted successfully" });
+		return reply.status(200).send({ message: "Transaction deleted successfully", newBalance });
 
 	} catch (error) {
 		handleError(error, reply);
