@@ -40,8 +40,8 @@ fastify.addHook("onRequest", loggingMiddleware);
 const routes = [
   { route: authRoute, prefix: "/api/auth" },
 
-  { route: accountRoute, prefix: "/api/mentis" },
-  { route: transactionRoute, prefix: "/api/mentis" },
+  { route: accountRoute, prefix: "/api" },
+  { route: transactionRoute, prefix: "/api" },
 ];
 
 fastify.get('/api/ping', (_, reply: FastifyReply) => {
