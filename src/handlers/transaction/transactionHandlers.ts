@@ -40,7 +40,8 @@ export async function createTransaction(request: FastifyRequest, reply: FastifyR
 				id: TransactionTable.id,
 				description: TransactionTable.description,
 				account_id: TransactionTable.account_id,
-				amount: TransactionTable.amount
+				amount: TransactionTable.amount,
+				created_at: TransactionTable.created_at
 			})
 
 		const [newBalance] = await db
@@ -113,7 +114,8 @@ export async function updateTransaction(request: FastifyRequest, reply: FastifyR
 				id: TransactionTable.id,
 				description: TransactionTable.description,
 				account_id: TransactionTable.account_id,
-				amount: TransactionTable.amount
+				amount: TransactionTable.amount,
+				created_at: TransactionTable.created_at
 			})
 
 		let newBalance = null
