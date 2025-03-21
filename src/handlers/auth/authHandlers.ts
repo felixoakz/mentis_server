@@ -17,10 +17,12 @@ export async function authRegister(request: FastifyRequest, reply: FastifyReply)
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const [user] = await db
+    const [userModel] = await db
       .insert(UserTable)
       .values({ username, email, password: hashedPassword })
       .returning();
+
+    const user = { id: userModel.id, username: userModel.username };
 
     reply.send({
       message: "User registered",
