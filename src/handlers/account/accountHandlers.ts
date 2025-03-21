@@ -29,7 +29,11 @@ export async function createAccount(request: FastifyRequest, reply: FastifyReply
     const [newAccount] = await db
       .insert(AccountTable)
       .values({ user_id: user.id, name, balance: balance ?? 0 })
-      .returning()
+      .returning({
+        id: AccountTable.id,
+        name: AccountTable.name,
+        balance: AccountTable.balance
+      })
 
     return reply.status(201).send({ newAccount });
 
@@ -43,9 +47,13 @@ export async function listAccounts(request: FastifyRequest, reply: FastifyReply)
     const user = request.user as UserFromCookie;
 
     const accounts = await db
-      .select()
+      .select({
+        id: AccountTable.id,
+        name: AccountTable.name,
+        balance: AccountTable.balance
+      })
       .from(AccountTable)
-      .where(eq(AccountTable.user_id, user.id));
+      .where(eq(AccountTable.user_id, user.id))
 
     return reply.status(200).send({ accounts });
 
@@ -72,7 +80,11 @@ export async function updateAccount(request: FastifyRequest, reply: FastifyReply
       .update(AccountTable)
       .set({ name })
       .where(eq(AccountTable.id, id))
-      .returning();
+      .returning({
+        id: AccountTable.id,
+        name: AccountTable.name,
+        balance: AccountTable.balance
+      })
 
     return reply.status(200).send({ updatedAccount });
 
