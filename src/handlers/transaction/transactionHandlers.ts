@@ -36,13 +36,18 @@ export async function createTransaction(request: FastifyRequest, reply: FastifyR
 				amount: amount,
 				description: description
 			})
-			.returning()
+			.returning({
+				id: TransactionTable.id,
+				description: TransactionTable.description,
+				account_id: TransactionTable.account_id,
+				amount: TransactionTable.amount
+			})
 
 		const [newBalance] = await db
 			.update(AccountTable)
 			.set({ balance: balanceAfter })
 			.where(eq(AccountTable.id, account_id))
-			.returning()
+			.returning({ balance: AccountTable.balance })
 
 		return reply.status(201).send({ newTransaction, newBalance })
 
@@ -59,7 +64,12 @@ export async function listTransactions(request: FastifyRequest, reply: FastifyRe
 		if (!accountId) throw ValidationError("Account Id is required");
 
 		const transactions = await db
-			.select()
+			.select({
+				id: TransactionTable.id,
+				description: TransactionTable.description,
+				account_id: TransactionTable.account_id,
+				amount: TransactionTable.amount
+			})
 			.from(TransactionTable)
 			.where(
 				and(
@@ -99,7 +109,12 @@ export async function updateTransaction(request: FastifyRequest, reply: FastifyR
 			.update(TransactionTable)
 			.set(updateData)
 			.where(eq(TransactionTable.id, id))
-			.returning();
+			.returning({
+				id: TransactionTable.id,
+				description: TransactionTable.description,
+				account_id: TransactionTable.account_id,
+				amount: TransactionTable.amount
+			})
 
 		let newBalance = null
 		if (amount !== undefined) {
@@ -136,7 +151,7 @@ export async function deleteTransaction(request: FastifyRequest, reply: FastifyR
 			.update(AccountTable)
 			.set({ balance: sql`${AccountTable.balance} - ${transaction.amount}` })
 			.where(eq(AccountTable.id, transaction.account_id))
-			.returning({balance: AccountTable.balance})
+			.returning({ balance: AccountTable.balance })
 
 		return reply.status(200).send({ message: "Transaction deleted successfully", newBalance });
 
