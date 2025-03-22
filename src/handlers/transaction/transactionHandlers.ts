@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, sql, lt, gte } from "drizzle-orm";
 import { FastifyReply, FastifyRequest } from "fastify";
 
 import { TransactionSelectType, TransactionTable } from "../../models/Transaction.js";
@@ -59,27 +59,41 @@ export async function createTransaction(request: FastifyRequest, reply: FastifyR
 
 export async function listTransactions(request: FastifyRequest, reply: FastifyReply): Promise<void> {
 	try {
-		const user = request.user as UserFromCookie
-		const { accountId } = request.params as { accountId: string }
+		const user = request.user as UserFromCookie;
+		const { accountId } = request.params as { accountId: string };
+		const { year, month } = request.query as { year: string; month: string };
 
 		if (!accountId) throw ValidationError("Account Id is required");
+		if (!year || !month) throw ValidationError("Year and Month are required");
+
+		const monthNumber = parseInt(month, 10);
+		if (isNaN(monthNumber) || monthNumber < 1 || monthNumber > 12) {
+			throw ValidationError("Invalid month value. It must be between 1 and 12.");
+		}
+
+		const paddedMonth = monthNumber.toString().padStart(2, '0');
+		const startDate = `${year}-${paddedMonth}-01`;
 
 		const transactions = await db
 			.select({
 				id: TransactionTable.id,
 				description: TransactionTable.description,
 				account_id: TransactionTable.account_id,
-				amount: TransactionTable.amount
+				amount: TransactionTable.amount,
+				created_at: TransactionTable.created_at
 			})
 			.from(TransactionTable)
 			.where(
 				and(
 					eq(TransactionTable.user_id, user.id),
-					eq(TransactionTable.account_id, accountId)
-				))
-			.orderBy(TransactionTable.created_at)
+					eq(TransactionTable.account_id, accountId),
+					gte(TransactionTable.created_at, sql`${startDate}::date`),
+					lt(TransactionTable.created_at, sql`(${startDate}::date + interval '1 month')`)
+				)
+			)
+			.orderBy(TransactionTable.created_at);
 
-		return reply.send({ transactions })
+		return reply.send({ transactions });
 
 	} catch (error) {
 		handleError(error, reply);
