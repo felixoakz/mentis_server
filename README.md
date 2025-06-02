@@ -16,5 +16,5 @@ Fastify-based REST API backend for [Mentis](https://mentis-client.vercel.app/log
 
 ---
 
-> 🔗 **Live Demo (Client)**: https://mentis-client.vercel.app/login  
+> 🔗 **Live Demo (Client)**: https://mentis-client.vercel.app 
 > 💻 **Client Repo**: [mentis_client](https://github.com/felixoakz/mentis_client)
